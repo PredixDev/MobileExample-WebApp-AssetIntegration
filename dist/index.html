@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> PM Example</title>
+	<style>
+		div.scroll {
+			overflow: scroll;
+			max-height: 600px;
+			width: 90%;
+			position: absolute;
+			top: 40px;
+			margin: 10px 20px;
+			color: green;
+			border-style: dotted;
+			border-color: green;
+		}
+		.textarea {
+			width: 98%;
+		}
+		.button {
+			background-color: green;
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 20px;
+	}
+	</style>
+
+	<script>
+		// hardcoding document name (username_predix_assest_ZONEID) here.
+		// TODO: A view needs to be created in container app which should emit
+		// for document type 'asset' and webApp needs to fetch document from that view.
+		var userName = 'kamal_mann_ge_com'; // value from config/default.json - replace '.' & '@' with '_'
+		var assetZoneID = '43bf717f-86a5-45da-9053-6651c00d1a99'; // value from config/default.json
+
+		// sends a GET HTTP request
+		var sendRequest = function(url, successHandler, errorHandler) {
+			var xhr = new XMLHttpRequest();
+			xhr.open('get', url, true);
+			xhr.responseType = 'json';
+			xhr.onload = function() {
+				var status = xhr.status;
+				if (status == 200) {
+					successHandler && successHandler(xhr.response);
+				} else {
+					errorHandler && errorHandler(status);
+				}
+			};
+			xhr.send();
+		};
+
+
+		// sends a POST HTTP request
+		var sendPOSTRequest = function(url, body, successHandler, errorHandler) {
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', url, true);
+			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			xhr.setRequestHeader('Content-Length', body.length);
+			xhr.responseType = 'json';
+			xhr.onload = function() {
+				var status = xhr.status;
+				if (status == 200) {
+					successHandler && successHandler(xhr.response);
+				} else {
+					errorHandler && errorHandler(status);
+				}
+			};
+			xhr.send(JSON.stringify(body));
+		};
+
+		var getUserName = function()
+		{
+			return userName+'_predix_asset_'+assetZoneID;
+		};
+
+		// Looks for a specific document (USERNAME + '_predix_assest_' + PREDIX_ZONE_ID)
+		var findAssetDoc =function(data){
+			var rows = data.rows;
+			var toReturn = null;
+			var assetDocID = getUserName();
+			for (var i = 0; i < rows.length; i++) {
+				var row = rows[i];
+				if (row.hasOwnProperty('id') && row.id === assetDocID) {
+					toReturn = row;
+					break;
+				}
+
+			}
+			return toReturn;
+		};
+
+		// using json2html - https://github.com/moappi/jquery.json2html
+		var displayJson = function(jsonDoc)
+		{
+			// var transform = {"tag": "li", "id":"${id}", children:[
+			// 	{"tag": "span", "html": "Engine: ${engine}, Serial: ${serial_no}, Model: ${model}, Type: ${type}"}
+			// ]};
+			// displaying data in div 'id01'
+			var div = document.getElementById('id01');
+			// div.innerHTML = json2html.transform(jsonDoc.doc.asset_results,transform);
+			div.value = JSON.stringify(jsonDoc.doc.asset_results);
+		};
+
+		var refreshData = function()
+		{
+			var allDocsQuery = 'http://pmapi/cdb/pm/_all_docs?include_docs=true';
+			sendRequest(allDocsQuery, function(data) {
+				// alert('data: ' + JSON.stringify(data.rows));
+				var assetDoc = findAssetDoc(data);
+				displayJson(assetDoc);
+				// console.log(JSON.stringify(assetDoc));
+			}, function(status) {
+				alert('Something went wrong:' + status);
+			});
+		};
+
+		var gotChanges = function(data)
+		{
+				console.log('Looks like assets doc got changed:', data);
+        refreshData();
+		};
+
+		var watchDocChanges = function()
+		{
+			// http://pmapi/notify/events/DocumentChangedNotification/kamal_mann_ge_com_predix_asset_43bf717f-86a5-45da-9053-6651c00d1a99
+			var docID = getUserName();
+			var notifyURL = 'http://pmapi/notify/events/DocumentChangedNotification/'+docID;
+			var body = {
+        			"script":"gotChanges"
+    			};
+
+			sendPOSTRequest(notifyURL, body, function(data) {
+				console.log('watchDocChanges response: ',JSON.stringify(data));
+			}, function(status) {
+				alert('Something went wrong on POST:' + status);
+			});
+		};
+	</script>
+
+</head>
+
+<body>
+	<input type="button" class="button" value="Refresh" onClick="refreshData()">
+	<input type="button" class="button" value="PUT" onClick="alert('need to work on this ...')">
+	<input type="button" class="button" value="Watch" onClick="watchDocChanges()">
+	<div  class="scroll" >
+		<textarea id="id01" class="textarea" rows="15" cols="100">
+
+		</textarea>
+	</div>
+
+
+</body>
+</html>

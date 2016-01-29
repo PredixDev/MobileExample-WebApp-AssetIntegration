@@ -1,0 +1,8 @@
+{
+  "name": "pa-basic-app",
+  "version": "0.0.1",
+  "main": "index.html",
+  "nativeScroll": "false",
+  "src-folder": "./dist/",
+  "output-folder": "./dist-zip/"
+}
