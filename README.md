@@ -1,4 +1,4 @@
-# MOBILE-ASSET-WEBAPP(v0.1)
+# MobileExample-WebApp-AssetIntegration(v0.1)
 A sample webapp which displays data from asset service.
 
 ## Configuration
