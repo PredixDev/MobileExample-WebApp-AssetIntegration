@@ -1,5 +1,5 @@
 # MobileExample-WebApp-AssetIntegration
-A sample webapp which displays data from asset service.
+A sample web app that displays data from asset service.
 
 ## Before You Begin:
 It is assumed that you have running instances of [_Predix Mobile service_](https://www.predix.io/docs#rae4EfJ6) and [_Predix Asset service_](https://www.predix.io/docs/#aRPNr2R9), and you have installed the Predix Mobile pm command line tool.  
