@@ -3,7 +3,13 @@ A sample webapp which displays data from asset service.
 
 ## Before You Begin:
 It is assumed that you have running instances of [_Predix Mobile service_](https://www.predix.io/docs#rae4EfJ6) and [_Predix Asset service_](https://www.predix.io/docs/#aRPNr2R9), and you have installed the Predix Mobile pm command line tool.  
-It is also assumed that you have pushed your [_sync-processor_](https://github.com/PredixDev/MobileExample-Microservice-AssetIntegration) to your CF space (or have it running on your development system).  
+It is also assumed that you have pushed your [_sync-processor_](https://github.com/PredixDev/MobileExample-Microservice-AssetIntegration) to your CF space (or have it running on your development system). 
+
+To get started, follow this documentation:
+* [Get Started with the Mobile Service and Mobile SDK] (https://www.predix.io/docs#rae4EfJ6) 
+* [Running the Predix Mobile Sample App] (https://www.predix.io/docs#EGUzWwcC)
+* [Creating a Mobile Hello World Webapp] (https://www.predix.io/docs#DrBWuHkl) 
+
 
 ## Configuration
 
